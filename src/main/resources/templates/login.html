@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" ng-app="login">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Bootstrap -->
+    <link href="css/styles.css" rel="stylesheet"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- angularjs -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Home</a>
+        <a class="navbar-brand" href="/login">Login</a>
+    </div>
+</nav>
+<div class="container">
+    <div class="card card-container">
+        <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+        <p id="profile-name" class="profile-name-card"></p>
+        <form th:action="@{/login}" class="form-signin" method="post">
+            <span id="reauth-email" class="reauth-email"></span>
+            <input type="email" name="username" id="inputEmail" class="form-control" placeholder="Email address" required="true" autofocus="true" value="se1app@haw-hamburg.de"></input>
+            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required="true"></input>
+            <div id="remember" class="checkbox">
+                <label>
+                    <input type="checkbox" value="remember-me"></input> Remember me
+                </label>
+            </div>
+            <div th:if="${param.error}">
+                <span style="color:red;">Invalid username and password.</span>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+        </form><!-- /form -->
+        <a href="#" class="forgot-password">
+            Forgot the password?
+        </a>
+    </div><!-- /card-container -->
+</div><!-- /container -->
+
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+</body>
+</html>
