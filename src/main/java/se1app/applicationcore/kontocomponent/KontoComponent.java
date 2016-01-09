@@ -3,6 +3,7 @@ package se1app.applicationcore.kontocomponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import se1app.applicationcore.filialecomponent.FilialeComponent;
+import se1app.applicationcore.filialecomponent.FilialeComponentInterface;
 import se1app.applicationcore.filialecomponent.FilialeRepository;
 
 import java.io.IOException;
@@ -19,12 +20,13 @@ public class KontoComponent implements KontoComponentInterface {
     private KontoRepository kontoRepository;
     // Autowiring durch Constructor-Injection
     //private BuchungsPosition
-    private FilialeComponent filialeComponent = new FilialeComponent();
+    private FilialeComponentInterface filialeComponentInterface;
 
     @Autowired
-    public KontoComponent(KontoRepository kontoRepository) {
+    public KontoComponent(KontoRepository kontoRepository, FilialeComponentInterface filialeComponentInterface) {
 
         this.kontoRepository = kontoRepository;
+        this.filialeComponentInterface = filialeComponentInterface;
     }
     @Override
     public List<Konto> getAlleKonten() {
@@ -88,6 +90,6 @@ public class KontoComponent implements KontoComponentInterface {
 
         quellKonto.get().buche(-betrag);
         zielKonto.get().buche(betrag);
-        filialeComponent.erhoeheFilialeStastistik();
+        filialeComponentInterface.erhoeheFilialeStastistik();
     }
 }

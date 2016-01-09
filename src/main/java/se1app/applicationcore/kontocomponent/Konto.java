@@ -6,6 +6,7 @@ import sun.swing.BakedArrayList;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Created by talal on 31.12.15.
@@ -34,13 +35,20 @@ import java.util.List;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="konto_id")
-    private Filiale filiale = new Filiale();
+    private Filiale filiale;
 
     public Konto() {}
 
     public Konto(Integer kontostand, String name) {
         this.name = name;
         this.kontostand = kontostand;
+        this.kontoNummer = new KontoNrTyp();
+    }
+
+    public Konto(Integer kontostand, String name, Integer kontonummer) {
+        this.name = name;
+        this.kontostand = kontostand;
+        this.kontoNummer = new KontoNrTyp(kontonummer);
     }
 
     public void buche(Integer betrag) {

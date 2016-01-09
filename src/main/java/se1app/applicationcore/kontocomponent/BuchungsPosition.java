@@ -12,6 +12,7 @@ public class BuchungsPosition {
     private Integer id;
     private Integer gebuchterBetrag;
 
+    public BuchungsPosition() {}
     public BuchungsPosition(Integer gebuchterBetrag) {this.gebuchterBetrag = gebuchterBetrag;}
 
     public Integer getGebuchterBetrag() {

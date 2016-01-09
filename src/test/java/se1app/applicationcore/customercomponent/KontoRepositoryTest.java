@@ -59,7 +59,7 @@ public class KontoRepositoryTest {
         Optional<Konto> kontoA = kontoRepository.findByName("talal");
         assertThat(kontoA.isPresent());
         KontoNrTyp kontoNr = kontoA.get().getKontoNummer();
-        //Optional<Konto> kontoB = kontoRepository.findByKontoNummer(kontoNr);
-        //assertThat(kontoB.isPresent());
+        Optional<Konto> kontoB = kontoRepository.findByKontoNummer(kontoNr);
+        assertThat(kontoB.isPresent());
     }
 }

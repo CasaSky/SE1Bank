@@ -13,15 +13,20 @@ import java.util.List;
  * Created by talal on 31.12.15.
  */
 @Entity
-@SequenceGenerator(name="seq", initialValue=1, allocationSize = 99999)
+//@SequenceGenerator(name="seq", initialValue=1, allocationSize = 99999)
 public class Filiale {
 
-    private static final long MAXBUCHUNG =9999999999L;
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
-    @Id
-    private Integer filialNr;
+    private static final long MAXBUCHUNG = 9999999999L;
 
-    @Max(MAXBUCHUNG)
+    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @Id
+    @GeneratedValue
+    private Integer id;
+
+    @Column(unique = true)
+    private final Integer filialNr = 123456; // VEREINFACHUNG eine eizige Filiale
+
+    //@Max(MAXBUCHUNG)
     private long anzahlBuchungen;
 
     @OneToMany
@@ -45,10 +50,6 @@ public class Filiale {
         return filialNr;
     }
 
-    public void setFilialNr(Integer filialNr) {
-        this.filialNr = filialNr;
-    }
-
     public long getAnzahlBuchungen() {
         return anzahlBuchungen;
     }
@@ -65,6 +66,10 @@ public class Filiale {
         this.konten = konten;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -75,12 +80,12 @@ public class Filiale {
         if (anzahlBuchungen != filiale.anzahlBuchungen) return false;
         if (!filialNr.equals(filiale.filialNr)) return false;
         return konten.equals(filiale.konten);
-
     }
 
     @Override
     public int hashCode() {
-        int result = filialNr.hashCode();
+        int result = id.hashCode();
+        result = 31 * result + filialNr.hashCode();
         result = 31 * result + (int) (anzahlBuchungen ^ (anzahlBuchungen >>> 32));
         result = 31 * result + konten.hashCode();
         return result;
@@ -89,7 +94,8 @@ public class Filiale {
     @Override
     public String toString() {
         return "Filiale{" +
-                "filialNr=" + filialNr +
+                "id=" + id +
+                ", filialNr=" + filialNr +
                 ", anzahlBuchungen=" + anzahlBuchungen +
                 ", konten=" + konten +
                 '}';
