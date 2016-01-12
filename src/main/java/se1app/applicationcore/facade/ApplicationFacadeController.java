@@ -75,34 +75,36 @@ class ApplicationFacadeController {
         }
     }
 
-    @RequestMapping(value = "/transactions", method = RequestMethod.POST)
+    @RequestMapping(value = "/transactions/{betrag}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public BuchungsPosition ueberweise(@RequestBody String betrag) {
-            if (betrag == null )
+    public BuchungsPosition ueberweise(@PathVariable("betrag") Integer betrag){
+                                       //@RequestBody Integer betrag ) {
+            if (betrag == null ) {
                 throw new IllegalArgumentException("Betrag darf nicht null!");
-            Konto talal = new Konto(1000, "Talal");
-            Konto kyo = new Konto(1000, "Kyo");
-            Integer talalId = talal.getId();
-            Integer kyoId = kyo.getId();
-            kontoComponentInterface.addKonto(talal);
-            kontoComponentInterface.addKonto(kyo);
-            Konto konto1 = kontoComponentInterface.getKonto(talalId);
-            Konto konto2 = kontoComponentInterface.getKonto(kyoId);
-            kontoComponentInterface.ueberweise(talal.getKontoNummer(), kyo.getKontoNummer(), Integer.parseInt(betrag));
-            return new BuchungsPosition(Integer.parseInt(betrag));
+            }
+            else {
+                Konto talal = new Konto(1000, "Talal", 100001);
+                Konto kyo = new Konto(1000, "Kyo", 100002);
+                kontoComponentInterface.addKonto(talal);
+                kontoComponentInterface.addKonto(kyo);
+                Konto konto1 = kontoComponentInterface.getKonto(talal.getId());
+                Konto konto2 = kontoComponentInterface.getKonto(kyo.getId());
+                kontoComponentInterface.ueberweise(konto1.getKontoNummer(), konto2.getKontoNummer(), betrag);
+                return new BuchungsPosition(betrag);
+            }
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)
-    public List<BuchungsPosition> getBuchungen() {
+    public ResponseEntity<?>/*List<BuchungsPosition>*/ getBuchungen() {
 
-        List<BuchungsPosition> buchungen;
+        //List<BuchungsPosition> buchungen;
             List<Konto> kontos = kontoComponentInterface.getAlleKonten();
             Konto zielKonto = null;
             for (Konto konto : kontos) {
                 if (konto.getName().equalsIgnoreCase("Kyo"))
                     zielKonto = konto;
             }
-                buchungen = zielKonto.getBuchungsPositions();
-                return buchungen;
+          //      buchungen = zielKonto.getBuchungsPositions();
+            return new ResponseEntity<Object>(zielKonto, HttpStatus.OK);
     }
 }

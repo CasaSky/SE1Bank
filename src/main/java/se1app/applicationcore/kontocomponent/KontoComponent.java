@@ -90,6 +90,8 @@ public class KontoComponent implements KontoComponentInterface {
 
         quellKonto.get().buche(-betrag);
         zielKonto.get().buche(betrag);
-        filialeComponentInterface.erhoeheFilialeStastistik();
+        kontoRepository.save(quellKonto.get());
+        kontoRepository.save(zielKonto.get());
+        //filialeComponentInterface.erhoeheFilialeStastistik();
     }
 }
