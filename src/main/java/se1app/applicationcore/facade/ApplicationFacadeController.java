@@ -9,10 +9,7 @@ import se1app.applicationcore.customercomponent.CustomerComponentInterface;
 import se1app.applicationcore.customercomponent.CustomerNotFoundException;
 import se1app.applicationcore.customercomponent.Reservation;
 import se1app.applicationcore.filialecomponent.FilialeComponentInterface;
-import se1app.applicationcore.kontocomponent.BuchungsPosition;
-import se1app.applicationcore.kontocomponent.Konto;
-import se1app.applicationcore.kontocomponent.KontoComponentInterface;
-import se1app.applicationcore.kontocomponent.KontoNotFoundException;
+import se1app.applicationcore.kontocomponent.*;
 import se1app.applicationcore.moviecomponent.MovieComponentInterface;
 import se1app.applicationcore.moviecomponent.MovieNotFoundException;
 
@@ -27,6 +24,8 @@ class ApplicationFacadeController {
 
     @Autowired
     private KontoComponentInterface kontoComponentInterface;
+
+    private BuchungsPositionRepository buchungsPositionRepository;
 
     @Autowired
     private FilialeComponentInterface filialeComponentInterface;
@@ -77,19 +76,28 @@ class ApplicationFacadeController {
 
     @RequestMapping(value = "/transactions", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public BuchungsPosition ueberweise(@RequestBody String betrag) {
-            if (betrag == null )
-                throw new IllegalArgumentException("Betrag darf nicht null!");
+    public List<BuchungsPosition> ueberweise() {
+            Integer betrag1=1000;
             Konto talal = new Konto(1000, "Talal");
             Konto kyo = new Konto(1000, "Kyo");
-            Integer talalId = talal.getId();
-            Integer kyoId = kyo.getId();
+
             kontoComponentInterface.addKonto(talal);
             kontoComponentInterface.addKonto(kyo);
-            Konto konto1 = kontoComponentInterface.getKonto(talalId);
-            Konto konto2 = kontoComponentInterface.getKonto(kyoId);
-            kontoComponentInterface.ueberweise(talal.getKontoNummer(), kyo.getKontoNummer(), Integer.parseInt(betrag));
-            return new BuchungsPosition(Integer.parseInt(betrag));
+            List<Konto> kontos = kontoComponentInterface.getAlleKonten();
+            Konto konto1 = kontos.get(0);
+            Konto konto2 = kontos.get(1);
+            String name = konto2.getName();
+            kontoComponentInterface.ueberweise(konto1.getKontoNummer(), konto2.getKontoNummer(), betrag1);
+
+        List<BuchungsPosition> buchungen;
+        kontos = kontoComponentInterface.getAlleKonten();
+        Konto zielKonto = null;
+        for (Konto konto : kontos) {
+            if (konto.getName().equalsIgnoreCase(name))
+                zielKonto = konto;
+        }
+        buchungen = zielKonto.getBuchungsPositions();
+        return buchungen;
     }
 
     @RequestMapping(value = "/transactions", method = RequestMethod.GET)

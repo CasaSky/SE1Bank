@@ -2,6 +2,7 @@ package se1app.applicationcore.kontocomponent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se1app.applicationcore.filialecomponent.Filiale;
 import se1app.applicationcore.filialecomponent.FilialeComponent;
 import se1app.applicationcore.filialecomponent.FilialeComponentInterface;
 import se1app.applicationcore.filialecomponent.FilialeRepository;
@@ -23,10 +24,14 @@ public class KontoComponent implements KontoComponentInterface {
     private FilialeComponentInterface filialeComponentInterface;
 
     @Autowired
+    FilialeRepository filialeRepository;
+
+    @Autowired
     public KontoComponent(KontoRepository kontoRepository, FilialeComponentInterface filialeComponentInterface) {
 
         this.kontoRepository = kontoRepository;
         this.filialeComponentInterface = filialeComponentInterface;
+
     }
     @Override
     public List<Konto> getAlleKonten() {
@@ -90,6 +95,10 @@ public class KontoComponent implements KontoComponentInterface {
 
         quellKonto.get().buche(-betrag);
         zielKonto.get().buche(betrag);
-        filialeComponentInterface.erhoeheFilialeStastistik();
+
+       /* Filiale filiale = new Filiale(100);
+        filialeRepository.save(filiale);
+        filialeComponentInterface = new FilialeComponent(filialeRepository);
+        filialeComponentInterface.erhoeheFilialeStastistik();*/
     }
 }

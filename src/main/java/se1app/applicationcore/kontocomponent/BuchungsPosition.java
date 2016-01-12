@@ -16,6 +16,13 @@ public class BuchungsPosition {
     private Integer id;
     private Integer gebuchterBetrag;
 
+    public Konto getKonto() {
+        return konto;
+    }
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Konto konto;
+
     public BuchungsPosition() {}
     public BuchungsPosition(Integer gebuchterBetrag) {this.gebuchterBetrag = gebuchterBetrag;}
 
