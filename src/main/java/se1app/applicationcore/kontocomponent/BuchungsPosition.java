@@ -7,6 +7,10 @@ import javax.persistence.*;
 @Entity
 public class BuchungsPosition {
 
+    public Integer getId() {
+        return id;
+    }
+
     @Id
     @GeneratedValue
     private Integer id;

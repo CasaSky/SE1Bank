@@ -8,51 +8,65 @@ import se1app.applicationcore.customercomponent.Customer;
 import se1app.applicationcore.customercomponent.CustomerComponentInterface;
 import se1app.applicationcore.customercomponent.CustomerNotFoundException;
 import se1app.applicationcore.customercomponent.Reservation;
+import se1app.applicationcore.filialecomponent.FilialeComponentInterface;
+import se1app.applicationcore.kontocomponent.BuchungsPosition;
+import se1app.applicationcore.kontocomponent.Konto;
+import se1app.applicationcore.kontocomponent.KontoComponentInterface;
+import se1app.applicationcore.kontocomponent.KontoNotFoundException;
 import se1app.applicationcore.moviecomponent.MovieComponentInterface;
 import se1app.applicationcore.moviecomponent.MovieNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 class ApplicationFacadeController {
 
-    @Autowired
-    private CustomerComponentInterface customerComponentInterface;
+   // @Autowired
+    //private CustomerComponentInterface customerComponentInterface;
 
     @Autowired
-    private MovieComponentInterface movieComponentInterface;
+    private KontoComponentInterface kontoComponentInterface;
 
-    @RequestMapping("/customers")
-    public List<Customer> getAllCustomers()
-    {
-        return customerComponentInterface.getAllCustomers();
+    @Autowired
+    private FilialeComponentInterface filialeComponentInterface;
+
+
+    @RequestMapping("/kontos")
+    public List<Konto> getALLKontos() {
+        return kontoComponentInterface.getAlleKonten();
     }
 
-    @RequestMapping(value = "/customers/{id}", method = RequestMethod.GET)
-    public Customer getCustomer(@PathVariable("id") Integer id) {
-        return customerComponentInterface.getCustomer(id);
+    @RequestMapping(value = "/kontos/{id}", method = RequestMethod.GET)
+    public Konto getKonto(@PathVariable("id") Integer id) {
+        return kontoComponentInterface.getKonto(id);
     }
 
-    @RequestMapping(value = "/customers/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/kontos/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCustomer(@PathVariable("id") Integer id) {
-        customerComponentInterface.deleteCustomer(id);
+        kontoComponentInterface.deleteKonto(id);
     }
 
-    @RequestMapping(value = "/customers", method = RequestMethod.POST)
+    @RequestMapping(value = "/kontos", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Customer addCustomer(@RequestBody Customer customer) {
-        customerComponentInterface.addCustomer(customer);
-        return customer;
+    public Konto addKonto(@RequestBody Konto konto) {
+        kontoComponentInterface.addKonto(konto);
+        return konto;
     }
 
-    @RequestMapping(value = "/customers/{id}/reservations", method = RequestMethod.POST)
-    public ResponseEntity<?> addReservation(@PathVariable("id") Integer customerId, @RequestBody Reservation reservation) {
+    @RequestMapping(value = "/kontos/{id}/buchungsposition", method = RequestMethod.POST)
+    public ResponseEntity<?> addBuchungsPosition(@PathVariable("id") Integer kontoId, @RequestBody BuchungsPosition buchungsPosition) {
         try {
-            customerComponentInterface.addReservation(customerId, reservation);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            Konto konto = kontoComponentInterface.getKonto(kontoId);
+            if (konto == null)
+                throw new KontoNotFoundException(kontoId);
+            else {
+                kontoComponentInterface.addBuchungsPosition(konto.getKontoNummer(), buchungsPosition);
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            }
         }
-        catch(CustomerNotFoundException ex) {
+        catch(KontoNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         catch(Exception ex)
@@ -61,18 +75,34 @@ class ApplicationFacadeController {
         }
     }
 
-    @RequestMapping(value = "/movies/{title}", method = RequestMethod.GET)
-    public ResponseEntity<?> getNumberOfReservations(@PathVariable("title") String title) {
-        try {
-            int numberOfReservations = movieComponentInterface.getNumberOfReservations(title);
-            return new ResponseEntity<Integer>(numberOfReservations, HttpStatus.OK);
-        }
-        catch(MovieNotFoundException ex) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        catch(Exception ex)
-        {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @RequestMapping(value = "/transactions", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public BuchungsPosition ueberweise(@RequestBody String betrag) {
+            if (betrag == null )
+                throw new IllegalArgumentException("Betrag darf nicht null!");
+            Konto talal = new Konto(1000, "Talal");
+            Konto kyo = new Konto(1000, "Kyo");
+            Integer talalId = talal.getId();
+            Integer kyoId = kyo.getId();
+            kontoComponentInterface.addKonto(talal);
+            kontoComponentInterface.addKonto(kyo);
+            Konto konto1 = kontoComponentInterface.getKonto(talalId);
+            Konto konto2 = kontoComponentInterface.getKonto(kyoId);
+            kontoComponentInterface.ueberweise(talal.getKontoNummer(), kyo.getKontoNummer(), Integer.parseInt(betrag));
+            return new BuchungsPosition(Integer.parseInt(betrag));
+    }
+
+    @RequestMapping(value = "/transactions", method = RequestMethod.GET)
+    public List<BuchungsPosition> getBuchungen() {
+
+        List<BuchungsPosition> buchungen;
+            List<Konto> kontos = kontoComponentInterface.getAlleKonten();
+            Konto zielKonto = null;
+            for (Konto konto : kontos) {
+                if (konto.getName().equalsIgnoreCase("Kyo"))
+                    zielKonto = konto;
+            }
+                buchungen = zielKonto.getBuchungsPositions();
+                return buchungen;
     }
 }

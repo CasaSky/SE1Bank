@@ -13,6 +13,10 @@ import se1app.applicationcore.Application;
 import se1app.applicationcore.customercomponent.Customer;
 import se1app.applicationcore.customercomponent.CustomerRepository;
 import se1app.applicationcore.customercomponent.Reservation;
+import se1app.applicationcore.filialecomponent.Filiale;
+import se1app.applicationcore.kontocomponent.BuchungsPosition;
+import se1app.applicationcore.kontocomponent.Konto;
+import se1app.applicationcore.kontocomponent.KontoRepository;
 import se1app.applicationcore.moviecomponent.Movie;
 
 import java.util.Arrays;
@@ -28,41 +32,41 @@ import static org.hamcrest.Matchers.*;
 public class ApplicationFacadeControllerTest {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private KontoRepository kontoRepository;
 
-    private Customer mickey;
-    private Customer minnie;
-    private Customer pluto;
+    private Konto talal;
+    private Konto kyo;
+    private Konto pluto;
 
     @Before
     public void setUp() {
-        customerRepository.deleteAll();
+        kontoRepository.deleteAll();
 
-        mickey = new Customer("Mickey Mouse");
-        minnie = new Customer("Minnie Mouse");
-        pluto = new Customer("Pluto");
-        customerRepository.save(Arrays.asList(mickey, minnie, pluto));
+        talal = new Konto(1000, "Talal Tabia");
+        kyo = new Konto(1000, "Kyo Lee");
+        pluto = new Konto(1000, "Pluto");
+        kontoRepository.save(Arrays.asList(talal, kyo, pluto));
     }
 
     @Test
-    public void canFetchMickey() {
-        Integer mickeyId = mickey.getId();
+    public void canFetchTalal() {
+        Integer talalId = talal.getId();
 
         when().
-                get("/customers/{id}", mickeyId).
+                get("/kontos/{id}", talalId).
         then().
                 statusCode(HttpStatus.OK.value()).
-                body("name", is("Mickey Mouse")).
-                body("id", is(mickeyId));
+                body("name", is("Talal Tabia")).
+                body("id", is(talalId));
     }
 
     @Test
     public void canFetchAll() {
         when().
-                get("/customers").
+                get("/kontos").
         then().
                 statusCode(HttpStatus.OK.value()).
-                body("name", hasItems("Mickey Mouse", "Minnie Mouse", "Pluto"));
+                body("name", hasItems("Talal Tabia", "Kyo Lee", "Pluto"));
     }
 
     @Test
@@ -70,14 +74,14 @@ public class ApplicationFacadeControllerTest {
         Integer plutoId = pluto.getId();
 
         when().
-                delete("/customers/{id}", plutoId).
+                delete("/kontos/{id}", plutoId).
         then().
                 statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     public void canSaveDonald() {
-        Customer donald = new Customer("Donald Duck");
+        Konto donald = new Konto(10000, "Donald Duck");
 
         given().
                 contentType("application/json").
@@ -85,20 +89,20 @@ public class ApplicationFacadeControllerTest {
         expect().
                 statusCode(HttpStatus.CREATED.value()).
         when().
-                post("/customers");
+                post("/kontos");
     }
 
-    @Test
-    public void canAddReservation() {
+    /*@Test
+    public void canAddBuchungsPosition() {
         Integer mickeyId = mickey.getId();
 
         when().
-                get("/movies/007").
+                get("/filiale/123456").
         then().
                 statusCode(HttpStatus.NOT_FOUND.value());
 
-        Movie movie007 = new Movie("007");
-        Reservation movieReservation007 = new Reservation(movie007);
+        Filiale haspa = new Filiale(100);
+        BuchungsPosition buchungsPosition = new BuchungsPosition(1000);
         given().
                 contentType("application/json").
                 body(movieReservation007).
@@ -112,5 +116,5 @@ public class ApplicationFacadeControllerTest {
         then().
                 statusCode(HttpStatus.OK.value()).
                 body(equalTo("1"));
-   }
+   }*/
 }

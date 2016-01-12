@@ -17,8 +17,9 @@ public class ApplicationRoutes {
         return "login";
     }
 
-    @RequestMapping("/manageCustomers")
+    @RequestMapping("/manageKontos")
     public String hello(String name, Model model) {
-        return "manageCustomers";
+        return "manageKontos";
     }
+
 }
