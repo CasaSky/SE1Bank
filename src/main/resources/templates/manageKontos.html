@@ -38,10 +38,12 @@
     </div>
 
     <table class="table table-striped">
-        <tr><th>#</th><th>Betrag</th></tr>
-        <tr ng-repeat="buchung in transactions">
-            <td>{{ buchung.id }}</td>
-            <td>{{ buchung.gebuchterBetrag }}</td>
+        <h1>Zielkonto Transactions</h1>
+        <tr><th>#</th><th>Name</th><th>Buchung</th></tr>
+        <tr ng-repeat="konto in kontos">
+            <td>{{ konto.id }}</td>
+            <td>{{ konto.name }}</td>
+            <td>{{ konto.buchungsPositions }}</td>
         </tr>
     </table>
 

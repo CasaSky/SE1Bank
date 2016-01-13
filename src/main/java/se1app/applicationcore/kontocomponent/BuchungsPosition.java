@@ -1,5 +1,7 @@
 package se1app.applicationcore.kontocomponent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 /**
  * Created by talal on 31.12.15.
@@ -20,7 +22,8 @@ public class BuchungsPosition {
         return konto;
     }
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @ManyToOne
     private Konto konto;
 
     public BuchungsPosition() {}

@@ -16,10 +16,13 @@ import se1app.applicationcore.customercomponent.Reservation;
 import se1app.applicationcore.filialecomponent.Filiale;
 import se1app.applicationcore.kontocomponent.BuchungsPosition;
 import se1app.applicationcore.kontocomponent.Konto;
+import se1app.applicationcore.kontocomponent.KontoComponentInterface;
 import se1app.applicationcore.kontocomponent.KontoRepository;
-import se1app.applicationcore.moviecomponent.Movie;
+import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
@@ -37,6 +40,9 @@ public class ApplicationFacadeControllerTest {
     private Konto talal;
     private Konto kyo;
     private Konto pluto;
+
+    @Autowired
+    private KontoComponentInterface kontoComponentInterface;
 
     @Before
     public void setUp() {
@@ -90,6 +96,18 @@ public class ApplicationFacadeControllerTest {
                 statusCode(HttpStatus.CREATED.value()).
         when().
                 post("/kontos");
+    }
+
+    @Test
+    public void canDoTransaction() {
+
+        Integer betrag = 300;
+                when().
+                        post("/transactions/{betrag}", betrag).
+                        then().
+                                statusCode(HttpStatus.OK.value()).
+                                body("buchungsPositions.get(0).gebuchterBetrag", equalTo(betrag));
+
     }
 
     /*@Test

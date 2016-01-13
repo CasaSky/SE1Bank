@@ -33,6 +33,7 @@ public class KontoComponent implements KontoComponentInterface {
         this.filialeComponentInterface = filialeComponentInterface;
 
     }
+
     @Override
     public List<Konto> getAlleKonten() {
         return kontoRepository.findAll();
@@ -95,10 +96,7 @@ public class KontoComponent implements KontoComponentInterface {
 
         quellKonto.get().buche(-betrag);
         zielKonto.get().buche(betrag);
-
-       /* Filiale filiale = new Filiale(100);
-        filialeRepository.save(filiale);
-        filialeComponentInterface = new FilialeComponent(filialeRepository);
-        filialeComponentInterface.erhoeheFilialeStastistik();*/
+        kontoRepository.save(quellKonto.get());
+        kontoRepository.save(zielKonto.get());
     }
 }

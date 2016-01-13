@@ -14,21 +14,16 @@ import java.util.StringJoiner;
 // Define a sequence - might also be in another class:
 //@SequenceGenerator(name="seq", initialValue=1, allocationSize=100)
 
-    @Entity
-    public class Konto {
-        @Id
-        @GeneratedValue
-        private Integer id;
-        @Column(unique = true)
-        private KontoNrTyp kontoNummer;
-        private Integer kontostand;
-        private String name;
+@Entity
+public class Konto {
+    @Id
+    @GeneratedValue
+    private Integer id;
+    @Column(unique = true)
+    private KontoNrTyp kontoNummer;
+    private Integer kontostand;
+     private String name;
 
-   /* @PrePersist
-    public void ensureId() {
-        KontoNrTyp kontoNrTyp = new KontoNrTyp(1100000);
-        kontoNummer = kontoNrTyp.getKontoNummer().intValue();
-    }*/
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name="konto_id")
     private List<BuchungsPosition> buchungsPositions = new ArrayList<>();
@@ -52,7 +47,7 @@ import java.util.StringJoiner;
     }
 
     public void buche(Integer betrag) {
-        buchungsPositions.add(new BuchungsPosition(betrag));
+        addBuchungsPosition(new BuchungsPosition(betrag));
         kontostand+=betrag;
         //filiale.plusAnzahlBuchungen();
     }
